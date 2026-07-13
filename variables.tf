@@ -14,14 +14,6 @@ EOT
     resource_group_name = string
     skill_id            = string
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.bot_channel_alexas : (
-        length(v.skill_id) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_bot_channel_alexa's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -54,5 +46,8 @@ EOT
   #   source:    [from validate.BotName: invalid when len(value) > 42]
   # path: bot_name
   #   source:    [from validate.BotName] !regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9_-]*$`).MatchString(v)
+  # path: skill_id
+  #   condition: length(value) > 0
+  #   message:   must not be empty
 }
 
